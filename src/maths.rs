@@ -341,4 +341,84 @@ impl Matrix {
 
         return Matrix { matrix, size: self.size };
     }
+
+    // Transformation functions
+    pub fn translation(x: f64, y: f64, z: f64) -> Matrix {
+        let mut matrix = vec![vec![0.0; 4]; 4];
+
+        matrix[0][3] = x;
+        matrix[1][3] = y;
+        matrix[2][3] = z;
+
+        matrix[0][0] = 1.0;
+        matrix[1][1] = 1.0;
+        matrix[2][2] = 1.0;
+        matrix[3][3] = 1.0;
+
+        return Matrix { matrix, size: 4 };
+    }
+    
+    pub fn scale(x: f64, y: f64, z: f64) -> Matrix {
+        let mut matrix = vec![vec![0.0; 4]; 4];
+
+        matrix[0][0] = x;
+        matrix[1][1] = y;
+        matrix[2][2] = z;
+
+        matrix[3][3] = 1.0;
+
+        return Matrix { matrix, size: 4 };
+    }
+
+    pub fn rotation_x(theta: f64) -> Matrix {
+        let mut matrix = vec![vec![0.0; 4]; 4];
+
+        let cos = theta.cos();
+        let sin = theta.sin();
+
+        matrix[1][1] = cos;
+        matrix[1][2] = -sin;
+        matrix[2][1] = sin;
+        matrix[2][2] = cos;
+
+        matrix[0][0] = 1.0;
+        matrix[3][3] = 1.0;
+
+        return Matrix { matrix, size: 4 };
+    }
+
+    pub fn rotation_y(theta: f64) -> Matrix {
+        let mut matrix = vec![vec![0.0; 4]; 4];
+
+        let cos = theta.cos();
+        let sin = theta.sin();
+
+        matrix[0][0] = cos;
+        matrix[0][2] = sin;
+        matrix[2][0] = -sin;
+        matrix[2][2] = cos;
+
+        matrix[1][1] = 1.0;
+        matrix[2][2] = 1.0;
+        matrix[3][3] = 1.0;
+
+        return Matrix { matrix, size: 4 };
+    }
+
+    pub fn rotation_z(theta: f64) -> Matrix {
+        let mut matrix = vec![vec![0.0; 4]; 4];
+
+        let cos = theta.cos();
+        let sin = theta.sin();
+
+        matrix[0][0] = cos;
+        matrix[0][1] = -sin;
+        matrix[1][0] = sin;
+        matrix[1][1] = cos;
+
+        matrix[2][2] = 1.0;
+        matrix[3][3] = 1.0;
+
+        return Matrix { matrix, size: 4 };
+    }
 }
