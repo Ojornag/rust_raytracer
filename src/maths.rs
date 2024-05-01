@@ -225,7 +225,7 @@ impl ops::Mul<Vector> for Matrix {
             }
             final_vec[y] = sum;
         }
-        
+
         return Vector {
             x: final_vec[0],
             y: final_vec[1],
@@ -278,6 +278,64 @@ impl Matrix {
         for y in 0..self.size {
             for x in 0..self.size{
                 matrix[x][y] = self.matrix[y][x];
+            }
+        }
+
+        return Matrix { matrix, size: self.size };
+    }
+
+    pub fn determinant(&self) -> f64 {
+        if self.size == 1 {
+            return self.matrix[0][0];
+        }
+        if self.size == 2 {
+            return self.matrix[0][0] * self.matrix[1][1] - self.matrix[0][1] * self.matrix[1][0];
+        }
+        let mut determinant: f64 = 0.0;
+        for x in 0..self.size {
+            determinant += self.matrix[0][x] * self.cofactor(0, x);
+        }
+
+        return determinant;
+    }
+
+    pub fn submatrix(&self, y: usize, x: usize) -> Matrix {
+        let mut matrix = vec![vec![0.0; self.size - 1]; self.size - 1];
+
+        for i in 0..self.size {
+            if i == y {
+                continue;
+            }
+            for j in 0..self.size {
+                if j == x {
+                    continue;
+                }
+                matrix[i - (i > y) as usize][j - (j > x) as usize] = self.matrix[i][j];
+            }
+        }
+
+        return Matrix { matrix, size: self.size - 1 };
+    }
+
+    pub fn cofactor(&self, y: usize, x: usize) -> f64 {
+        let minor = self.submatrix(y, x).determinant();
+        let sign = 1 - 2 * ((x + y) as i8 % 2);
+
+        return sign as f64 * minor;
+    }
+
+    pub fn inverse(&self) -> Matrix {
+        let determinant = self.determinant();
+
+        if determinant == 0.0 {
+            panic!("Tried to invert matrix with determinant 0");
+        }
+
+        let mut matrix = vec![vec![0.0; self.size]; self.size];
+
+        for y in 0..self.size {
+            for x in 0..self.size {
+                matrix[y][x] = self.cofactor(x, y) / determinant;
             }
         }
 
